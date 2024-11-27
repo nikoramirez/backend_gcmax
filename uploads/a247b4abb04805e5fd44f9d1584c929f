@@ -1,0 +1,59 @@
+import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
+import './proyectos.css';
+
+const Proyectos = () => {
+  // Estado para almacenar los datos de los proyectos
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Función para obtener proyectos desde el backend
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      try {
+        const response = await Axios.get(`${apiUrl}/api/proyectos`);
+        setProjects(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError('Error al cargar proyectos');
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (loading) return <p>Cargando proyectos...</p>;
+  if (error) return <p>{error}</p>;
+
+  return (
+    <div className="project-overview">
+      <h2>Vista General de Proyectos</h2>
+      <div className="project-list">
+        {projects.map((project) => (
+          <div key={project.id} className="project-card">
+            <h3>{project.name}</h3>
+            <p>
+              <strong>Descripción:</strong> {project.description}
+            </p>
+            <p>
+              <strong>Inicio:</strong>{' '}
+              {new Date(project.start_date).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Fin:</strong>{' '}
+              {new Date(project.end_date).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Estado:</strong> {project.status}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Proyectos;
