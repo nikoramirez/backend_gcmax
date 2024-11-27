@@ -39,6 +39,13 @@ const db = mysql.createConnection({
   queueLimit: 0,
 });
 
+db.connect( (error) => {
+  if(error){
+      console.log('El error de conexion es: '+ error)
+      return
+  }
+  console.log('Conexion exitosa :3')
+});
 //REGISTRAR UN USUARIO: POST.
 app.post('/register', (req, res) => {
   //Necesito obtener variables enviadas desde el formulario:
